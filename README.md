@@ -9,7 +9,7 @@ At the moment it supports GitHub and Jira as task sources and Obsidian as the de
 ## Env variables
 Set the following environment variables or create a `.env` file in the root of the project with the following content:
 - `GITHUB_TOKEN`: GitHub token to access the GitHub API
-- `OBSIDIAN_VAULT`: Path to your obisidian vault
+- `OBSIDIAN_VAULT_PATH`: Path to your obisidian vault
 - `FILTER_MY_TASK`: Filter only tasks assigned to you
 - `JIRA_USER`: Jira user email
 - `JIRA_TOKEN`: Jira API token
