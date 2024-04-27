@@ -9,28 +9,28 @@ use std::path::Path;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ObsidianHandler {
-    pub vault_path: String,
     pub daily_notes_path: String,
     #[serde(skip)]
     task_tag_map: std::collections::HashMap<TaskSource, String>,
+    #[serde(skip)]
+    pub vault_path: String,
 }
 
 impl ObsidianHandler {
-    pub fn new(vault_path: String, daily_note_path: String) -> Self {
+    pub fn new(daily_note_path: String) -> Self {
         let mut task_tag_map: std::collections::HashMap<TaskSource, String> =
             std::collections::HashMap::new();
         task_tag_map.insert(TaskSource::PullRequest, "#todo/work/pr".to_string());
         task_tag_map.insert(TaskSource::Issue, "#todo/work/tasks".to_string());
         task_tag_map.insert(TaskSource::JiraTicket, "#todo/work/jira".to_string());
 
+        let vault_path = std::env::var("OBSIDIAN_VAULT_PATH").expect("OBSIDIAN_VAULT_PATH not set");
+
         ObsidianHandler {
-            vault_path: ObsidianHandler::resolve(&vault_path),
             daily_notes_path: daily_note_path,
             task_tag_map,
+            vault_path,
         }
-    }
-    pub fn resolve(vault_path: &String) -> String {
-        std::env::var(vault_path).expect("VAULT_PATH not set")
     }
 
     pub fn calculate_sha256(input: &str) -> String {
