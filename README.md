@@ -1,4 +1,4 @@
-# Task Watcher
+# Tasks Watcher
 
 Simple Rust utility to poll tasks and save them in your Obsidian daily task note.
 
@@ -25,4 +25,7 @@ cd task-watcher
 cargo run
 ```
 
-Use: `task-watcher --help` to see all available options.
+Use: `tasks-watcher --help` to see all available options.
+
+## TODOs
+- [ ] Use of `cargo deb` to crate a package and install the service: see [service-example](https://github.com/vasilakisfil/hello.service/tree/master) and [cargo-deb](https://github.com/kornelski/cargo-deb)

@@ -1,5 +1,5 @@
 [package]
-name = "task-watcher"
+name = "tasks-watcher"
 version = "0.1.0"
 edition = "2021"
 authors = ["Gianoberto Giampieri giano.giampieri@proton.me"]
@@ -10,6 +10,16 @@ repository = "https://github.com/goldegard/task-watcher"
 categories = ["development-tools", "utilities"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[packge.metadata.deb]
+depends = "$auto. systemd"
+extendend-description = "Simple task watcher for your tasks."
+section = "utils"
+priority = "optional"
+assets = [
+	["target/release/tasks-watcher", "/usr/bin/tasks-watcher", "755"],
+	["debian/tasks-watcher.service", "/etc/systemd/system/tasks-watcher.service", "644"],
+]
 
 [dependencies]
 chrono = "0.4.38"
