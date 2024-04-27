@@ -1,0 +1,16 @@
+[Unit]
+AssertPathExists=/usr/bin/tasks-watcher
+After=network.target
+Description=Tasks watcher daemon
+
+[Service]
+WorkingDirectory=~
+ExecStart=/usr/bin/tasks-watcher -e %h/.config/tasks-watcher/env.env -c %h/.config/tasks-watcher/config.yaml
+Restart=always
+RestartSec=1
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+Alias=tasks-watcher
+WantedBy=default.target
