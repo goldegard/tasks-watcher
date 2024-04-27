@@ -18,7 +18,6 @@ section = "utils"
 priority = "optional"
 assets = [
 	["target/release/tasks-watcher", "/usr/bin/tasks-watcher", "755"],
-	["debian/tasks-watcher.service", "/etc/systemd/system/tasks-watcher.service", "644"],
 ]
 
 [dependencies]
