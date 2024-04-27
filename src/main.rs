@@ -18,10 +18,10 @@ struct Args {
     // Path to the .env file
     #[clap(short, long)]
     env_file: Option<String>,
-    
+
     // Path to the configuration yaml file
     #[clap(short, long)]
-    config_file: Option<String>,
+    config_file: String,
 }
 
 #[tokio::main]
@@ -37,8 +37,8 @@ async fn main() {
 
     loop {
         // read config and reset tasks
-        let config = Config::from_file(args.config_file.as_ref().unwrap_or(&"config.yaml".to_string()));
-        
+        let config = Config::from_file(&args.config_file);
+
         // instantiate sources
         let gh_source = sources::github::GitHubSource::new(
             config.github_config.current_user,
