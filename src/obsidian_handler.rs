@@ -18,11 +18,12 @@ pub struct ObsidianHandler {
 
 impl ObsidianHandler {
     pub fn new(daily_note_path: String) -> Self {
+        const TAG: &str = "#todo/work";
         let mut task_tag_map: std::collections::HashMap<TaskSource, String> =
             std::collections::HashMap::new();
-        task_tag_map.insert(TaskSource::PullRequest, "#todo/work/pr".to_string());
-        task_tag_map.insert(TaskSource::Issue, "#todo/work/tasks".to_string());
-        task_tag_map.insert(TaskSource::JiraTicket, "#todo/work/jira".to_string());
+        task_tag_map.insert(TaskSource::PullRequest, TAG.to_string());
+        task_tag_map.insert(TaskSource::Issue, TAG.to_string());
+        task_tag_map.insert(TaskSource::JiraTicket, TAG.to_string());
 
         let vault_path = std::env::var("OBSIDIAN_VAULT_PATH").expect("OBSIDIAN_VAULT_PATH not set");
 
