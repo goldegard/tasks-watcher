@@ -1,4 +1,4 @@
-use crate::task::{Task, TaskSource};
+use crate::task::{Task, TaskSource, TaskStatus};
 use chrono;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -7,17 +7,21 @@ use std::io::Write;
 use std::io::{self, BufRead};
 use std::path::Path;
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ObsidianConfig {
+    pub notes_path: String,
+    pub daily_notes: bool,
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ObsidianHandler {
-    pub daily_notes_path: String,
-    #[serde(skip)]
+    pub config: ObsidianConfig,
     task_tag_map: std::collections::HashMap<TaskSource, String>,
-    #[serde(skip)]
     pub vault_path: String,
 }
 
 impl ObsidianHandler {
-    pub fn new(daily_note_path: String) -> Self {
+    pub fn new(config: ObsidianConfig) -> Self {
         let mut task_tag_map: std::collections::HashMap<TaskSource, String> =
             std::collections::HashMap::new();
         task_tag_map.insert(TaskSource::PullRequest, "#todo/work/pr".to_string());
@@ -27,7 +31,7 @@ impl ObsidianHandler {
         let vault_path = std::env::var("OBSIDIAN_VAULT_PATH").expect("OBSIDIAN_VAULT_PATH not set");
 
         ObsidianHandler {
-            daily_notes_path: daily_note_path,
+            config,
             task_tag_map,
             vault_path,
         }
@@ -65,7 +69,12 @@ pub trait HandleTask {
 impl HandleTask for ObsidianHandler {
     fn add_tasks(&self, tasks: Vec<Task>) {
         let today = self.today();
-        let file_path = format!("{}/{}/{}.md", self.vault_path, self.daily_notes_path, today);
+        let file_path: String;
+        if self.config.daily_notes {
+            file_path = format!("{}/{}/{}.md", self.vault_path, self.config.notes_path, today);
+        } else {
+            file_path = format!("{}/{}/tasks.md", self.vault_path, self.config.notes_path);
+        }
 
         // create the file or fail if it exists
         let new_file = std::fs::OpenOptions::new()
@@ -88,6 +97,10 @@ impl HandleTask for ObsidianHandler {
             .expect(format!("Could not open file: {}", &file_path).as_str());
 
         for task in tasks {
+            if task.status == TaskStatus::Done || task.status == TaskStatus::Review {
+                continue;
+            }
+
             let tag = self.task_tag_map.get(&task.source).unwrap();
             let task_string = format!("- [ ] {} {}", tag, task.to_string());
             let hashed_task = ObsidianHandler::calculate_sha256(&task_string.trim().to_string());
