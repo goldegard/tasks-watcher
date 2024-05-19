@@ -13,10 +13,15 @@ pub enum TaskSource {
     JiraTicket
 }
 
+#[derive(PartialEq)]
 pub enum TaskStatus {
-    Open,
+    Todo,
+    SelectedForDevelopment,
     InProgress,
-    Done
+    Blocked,
+    Review,
+    Done,
+    Open,
 }
 
 use std::fmt;
@@ -34,8 +39,12 @@ impl fmt::Display for TaskSource {
 impl fmt::Display for TaskStatus {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
+            TaskStatus::Todo => write!(f, "TODO"),
+            TaskStatus::SelectedForDevelopment => write!(f, "Selected For Development"),
             TaskStatus::Open => write!(f, "Open"),
             TaskStatus::InProgress => write!(f, "In Progress"),
+            TaskStatus::Blocked => write!(f, "Blocked"),
+            TaskStatus::Review => write!(f, "Review"),
             TaskStatus::Done => write!(f, "Done"),
         }
     }

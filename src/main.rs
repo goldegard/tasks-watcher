@@ -45,7 +45,7 @@ async fn main() {
         let jira_source = sources::jira::JiraSource::new();
 
         let obsidian_handler = obsidian_handler::ObsidianHandler::new(
-            config.obsidian_handler.daily_notes_path,
+            config.obsidian_handler.notes_path, config.obsidian_handler.daily_notes,
         );
 
 
