@@ -1,13 +1,13 @@
 use serde::{Deserialize, Serialize};
 use serde_yaml::{self};
-use crate::obsidian_handler::ObsidianHandler;
+use crate::obsidian_handler::ObsidianConfig;
 use crate::sources::github::GitHubSource;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config{
     pub github_config: GitHubSource,
     pub poll_interval: u64, // in minutes
-    pub obsidian_handler: ObsidianHandler,
+    pub obsidian_handler: ObsidianConfig,
 }
 
 impl Config {

@@ -7,18 +7,21 @@ use std::io::Write;
 use std::io::{self, BufRead};
 use std::path::Path;
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ObsidianHandler {
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ObsidianConfig {
     pub notes_path: String,
     pub daily_notes: bool,
-    #[serde(skip)]
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ObsidianHandler {
+    pub config: ObsidianConfig,
     task_tag_map: std::collections::HashMap<TaskSource, String>,
-    #[serde(skip)]
     pub vault_path: String,
 }
 
 impl ObsidianHandler {
-    pub fn new(notes_path: String, daily_notes: bool) -> Self {
+    pub fn new(config: ObsidianConfig) -> Self {
         let mut task_tag_map: std::collections::HashMap<TaskSource, String> =
             std::collections::HashMap::new();
         task_tag_map.insert(TaskSource::PullRequest, "#todo/work/pr".to_string());
@@ -28,8 +31,7 @@ impl ObsidianHandler {
         let vault_path = std::env::var("OBSIDIAN_VAULT_PATH").expect("OBSIDIAN_VAULT_PATH not set");
 
         ObsidianHandler {
-            notes_path,
-            daily_notes,
+            config,
             task_tag_map,
             vault_path,
         }
@@ -68,10 +70,10 @@ impl HandleTask for ObsidianHandler {
     fn add_tasks(&self, tasks: Vec<Task>) {
         let today = self.today();
         let file_path: String;
-        if self.daily_notes {
-            file_path = format!("{}/{}/{}.md", self.vault_path, self.notes_path, today);
+        if self.config.daily_notes {
+            file_path = format!("{}/{}/{}.md", self.vault_path, self.config.notes_path, today);
         } else {
-            file_path = format!("{}/{}/tasks.md", self.vault_path, self.notes_path);
+            file_path = format!("{}/{}/tasks.md", self.vault_path, self.config.notes_path);
         }
 
         // create the file or fail if it exists
